@@ -143,8 +143,8 @@ $$
 ### p2g时affine动量的计算
 
 ```python
-		mu = 0.1  #粘度
-        stressMu = -(C[p] + C[p].transpose()) * mu  #粘性应力矩阵
+	mu = 0.1  					#粘度
+        stressMu = -(C[p] + C[p].transpose()) * mu  	#粘性应力矩阵
         stressMu *= dt * p_vol * 4 / dx**2
         affine = ti.Matrix([[stress, 0], [0, stress]
                             ]) + p_mass * C[p] + stressMu
@@ -180,7 +180,7 @@ $$
 ### 在p2g中
 
 ```
-		stress = p_mass * RT * dt * 4 / dx**2
+	stress = p_mass * RT * dt * 4 / dx**2
         affine = ti.Matrix([[stress, 0], [0, stress]]) + p_mass * C[p]
 ```
 
