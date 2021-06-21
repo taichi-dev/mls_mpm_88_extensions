@@ -26,18 +26,18 @@
 
   ```python
   for p in x:
-      Xp = x[p] / dx#将坐标转换为网格单位
-      base = int(Xp - 0.5)#计算粒子左下方网格坐标，因为网格偏移为0，1，2，与左下方网格坐标相加后即可得到周围3*3网格
-      fx = Xp - base#计算坐标相对网格偏移
-      w = [0.5 * (1.5 - fx)**2, 0.75 - (fx - 1)**2, 0.5 * (fx - 0.5)**2]#计算权重
-      stress = -dt * 4 * E * p_vol * (J[p] - 1) / dx**2#计算压力造成的affine动量
-      affine = ti.Matrix([[stress, 0], [0, stress]]) + p_mass * C[p]#压力与affine动量
-      for i, j in ti.static(ti.ndrange(3, 3)):#将粒子信息传输至周围3*3的网格
-          offset = ti.Vector([i, j])#网格偏移
-          dpos = (offset - fx) * dx#网格相对粒子坐标
-          weight = w[i].x * w[j].y#网格权重
-          grid_v[base + offset] += weight * (p_mass * v[p] + affine @ dpos)#将动量投影至网格
-          grid_m[base + offset] += weight * p_mass#将质量投影至网格
+      Xp = x[p] / dx								#将坐标转换为网格单位
+      base = int(Xp - 0.5)							#计算粒子左下方网格坐标，因为网格偏移为0，1，2，与左下方网格坐标相加后即可得到周围3*3网格
+      fx = Xp - base								#计算坐标相对网格偏移
+      w = [0.5 * (1.5 - fx)**2, 0.75 - (fx - 1)**2, 0.5 * (fx - 0.5)**2]	#计算权重
+      stress = -dt * 4 * E * p_vol * (J[p] - 1) / dx**2				#计算压力造成的affine动量
+      affine = ti.Matrix([[stress, 0], [0, stress]]) + p_mass * C[p]		#压力与affine动量
+      for i, j in ti.static(ti.ndrange(3, 3)):					#将粒子信息传输至周围3*3的网格
+          offset = ti.Vector([i, j])						#网格偏移
+          dpos = (offset - fx) * dx						#网格相对粒子坐标
+          weight = w[i].x * w[j].y						#网格权重
+          grid_v[base + offset] += weight * (p_mass * v[p] + affine @ dpos)	#将动量投影至网格
+          grid_m[base + offset] += weight * p_mass				#将质量投影至网格
   ```
 
   
@@ -49,8 +49,8 @@
   ```python
   for i, j in grid_m:
           if grid_m[i, j] > 0:
-              grid_v[i, j] /= grid_m[i, j]#通过动量计算速度
-          grid_v[i, j].y -= dt * gravity#施加重力
+              grid_v[i, j] /= grid_m[i, j]	#通过动量计算速度
+          grid_v[i, j].y -= dt * gravity	#施加重力
           #可分离边界条件
           if i < bound and grid_v[i, j].x < 0:
               grid_v[i, j].x = 0
@@ -74,23 +74,23 @@
   
   ```python
   for p in x:
-          Xp = x[p] / dx#与p2g相同
-          base = int(Xp - 0.5)#与p2g相同
-          fx = Xp - base#与p2g相同
-          w = [0.5 * (1.5 - fx)**2, 0.75 - (fx - 1)**2, 0.5 * (fx - 0.5)**2]#与p2g相同
-          new_v = ti.Vector.zero(float, 2)#定义新的速度，用来从网格收集
-          new_C = ti.Matrix.zero(float, 2, 2)#定义新的仿射速度，用来从网格收集
-          for i, j in ti.static(ti.ndrange(3, 3)):#遍历周围3*3所有网格
-              offset = ti.Vector([i, j])#网格偏移
-              dpos = (offset - fx) * dx#网格相对粒子位置
-              weight = w[i].x * w[j].y#网格权重
-              g_v = grid_v[base + offset]#获取网格速度
-              new_v += weight * g_v#将网格速度传输至粒子
-              new_C += 4 * weight * g_v.outer_product(dpos) / dx**2#将网格仿射速度传输至粒子
-          v[p] = new_v#更新粒子速度
-          x[p] += dt * v[p]#更新粒子位置
-          J[p] *= 1 + dt * new_C.trace()#更新粒子体积
-          C[p] = new_C#更新粒子仿射速度
+          Xp = x[p] / dx							#与p2g相同
+          base = int(Xp - 0.5)							#与p2g相同
+          fx = Xp - base							#与p2g相同
+          w = [0.5 * (1.5 - fx)**2, 0.75 - (fx - 1)**2, 0.5 * (fx - 0.5)**2]	#与p2g相同
+          new_v = ti.Vector.zero(float, 2)					#定义新的速度，用来从网格收集
+          new_C = ti.Matrix.zero(float, 2, 2)					#定义新的仿射速度，用来从网格收集
+          for i, j in ti.static(ti.ndrange(3, 3)):				#遍历周围3*3所有网格
+              offset = ti.Vector([i, j])					#网格偏移
+              dpos = (offset - fx) * dx						#网格相对粒子位置
+              weight = w[i].x * w[j].y						#网格权重
+              g_v = grid_v[base + offset]					#获取网格速度
+              new_v += weight * g_v						#将网格速度传输至粒子
+              new_C += 4 * weight * g_v.outer_product(dpos) / dx**2		#将网格仿射速度传输至粒子
+          v[p] = new_v								#更新粒子速度
+          x[p] += dt * v[p]							#更新粒子位置
+          J[p] *= 1 + dt * new_C.trace()					#更新粒子体积
+          C[p] = new_C								#更新粒子仿射速度
   ```
   
   通过以上这些部分即可求解无粘的自由面弱可压缩液体，我们可以看到比较真实的液体滴落效果
