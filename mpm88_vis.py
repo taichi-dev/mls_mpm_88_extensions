@@ -35,11 +35,11 @@ def substep():
         fx = Xp - base
         w = [0.5 * (1.5 - fx)**2, 0.75 - (fx - 1)**2, 0.5 * (fx - 0.5)**2]
         stress = -dt * 4 * E * p_vol * (J[p] - 1) / dx**2
-        miu = 0.1  #粘度
-        stressMiu = -(C[p] + C[p].transpose()) * miu  #粘性应力矩阵
-        stressMiu *= dt * p_vol * 4 / dx**2
+        mu = 0.1  #粘度
+        stressMu = -(C[p] + C[p].transpose()) * mu  #粘性应力矩阵
+        stressMu *= dt * p_vol * 4 / dx**2
         affine = ti.Matrix([[stress, 0], [0, stress]
-                            ]) + p_mass * C[p] + stressMiu
+                            ]) + p_mass * C[p] + stressMu
         for i, j in ti.static(ti.ndrange(3, 3)):
             offset = ti.Vector([i, j])
             dpos = (offset - fx) * dx
