@@ -47,11 +47,11 @@ def substep():
         stress = p_mass0 * RT * dt * 4 / dx**2
         if type_p[p] == 1:
             stress += -dt * 4 * E * p_vol * (J[p] - 1) / dx**2
-        miu = 0.1  #粘度
-        stressMiu = -(C[p] + C[p].transpose()) * miu  #粘性应力矩阵
-        stressMiu *= dt * p_vol * 4 / dx**2
+        mu = 0.1  #粘度
+        stressMu = -(C[p] + C[p].transpose()) * mu  #粘性应力矩阵
+        stressMu *= dt * p_vol * 4 / dx**2
         affine = ti.Matrix([[stress, 0], [0, stress]
-                            ]) + p_mass * C[p] + stressMiu
+                            ]) + p_mass * C[p] + stressMu
         if grad_alpha[p].norm() > 0:
             alphanorm = grad_alpha[p].normalized()
             affine += -dt * p_vol * sigma * 4 * grad_alpha[p].norm() * (
