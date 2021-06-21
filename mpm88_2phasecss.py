@@ -104,8 +104,8 @@ def substep():
 @ti.kernel
 def init():
     for i in range(n_particles):
-        x1 = ti.random()  #i//(128)/128
-        x2 = ti.random()  ##i%(128)/128
+        x1 = ti.random()
+        x2 = ti.random()
         x[i] = [x1 * 0.8 + 0.1, x2 * 0.8 + 0.1]
         v[i] = [0, -1]
         J[i] = 1
