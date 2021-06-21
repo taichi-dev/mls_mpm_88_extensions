@@ -143,11 +143,11 @@ $$
 ### p2g时affine动量的计算
 
 ```python
-		miu = 0.1  #粘度
-        stressMiu = -(C[p] + C[p].transpose()) * miu  #粘性应力矩阵
-        stressMiu *= dt * p_vol * 4 / dx**2
+		mu = 0.1  #粘度
+        stressMu = -(C[p] + C[p].transpose()) * mu  #粘性应力矩阵
+        stressMu *= dt * p_vol * 4 / dx**2
         affine = ti.Matrix([[stress, 0], [0, stress]
-                            ]) + p_mass * C[p] + stressMiu
+                            ]) + p_mass * C[p] + stressMu
 ```
 
 为了保证收敛，需要将时间步长适当调小，从2e-4调整至1e-4：
