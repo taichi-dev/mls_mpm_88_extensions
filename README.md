@@ -112,9 +112,11 @@
   在mpm88的p2g过程中可以看到该计算。
   
   关于应力矩阵带来的affine动量为什么是：
+  
   $$
   affine +=\sigma*4*\Delta t/dx^2
   $$
+  
   大家可以在胡老师的mls-mpm文章中看到：
   
   [A Moving Least Squares Material Point Method with Displacement Discontinuity and Two-Way Rigid Body Coupling | Yuanming Hu (taichi.graphics)](https://yuanming.taichi.graphics/publication/2018-mlsmpm/)
